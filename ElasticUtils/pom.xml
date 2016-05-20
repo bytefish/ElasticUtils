@@ -33,7 +33,7 @@
         <connection>scm:git:git://github.com/bytefish/ElasticUtils.git</connection>
         <developerConnection>scm:git:git@github.com:bytefish/ElasticUtils.git</developerConnection>
     </scm>
-    
+
     <developers>
         <developer>
             <email>bytefish@gmx.de</email>
