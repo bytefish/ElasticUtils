@@ -21,6 +21,28 @@
         </plugins>
     </build>
 
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/bytefish/ElasticUtils</url>
+        <connection>scm:git:git://github.com/bytefish/ElasticUtils.git</connection>
+        <developerConnection>scm:git:git@github.com:bytefish/ElasticUtils.git</developerConnection>
+    </scm>
+    
+    <developers>
+        <developer>
+            <email>bytefish@gmx.de</email>
+            <name>Philipp Wagner</name>
+            <url>http://www.bytefish.de</url>
+            <id>bytefish</id>
+        </developer>
+    </developers>
+
     <dependencies>
 
         <dependency>
