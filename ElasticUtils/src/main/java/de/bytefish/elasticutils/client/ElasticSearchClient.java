@@ -44,8 +44,6 @@ public class ElasticSearchClient<TEntity> implements AutoCloseable {
 
     public void index(TEntity entity) {
         index(Arrays.asList(entity));
-
-        bulkProcessor.flush();
     }
 
     public void index(List<TEntity> entities) {
@@ -67,6 +65,10 @@ public class ElasticSearchClient<TEntity> implements AutoCloseable {
                 .setType(mapping.getIndexType())
                 .setSource(messageBytes)
                 .request();
+    }
+
+    public void flush() {
+        bulkProcessor.flush();
     }
 
     @Override
