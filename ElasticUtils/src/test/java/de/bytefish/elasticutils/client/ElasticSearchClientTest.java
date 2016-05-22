@@ -3,10 +3,9 @@
 
 package de.bytefish.elasticutils.client;
 
-import de.bytefish.elasticutils.client.ElasticSearchClient;
 import de.bytefish.elasticutils.client.bulk.configuration.BulkProcessorConfiguration;
 import de.bytefish.elasticutils.client.bulk.options.BulkProcessingOptionsBuilder;
-import de.bytefish.elasticutils.mapping.ElasticSearchMapping;
+import de.bytefish.elasticutils.mapping.IElasticSearchMapping;
 import de.bytefish.elasticutils.mapping.LocalWeatherDataMapper;
 import de.bytefish.elasticutils.model.LocalWeatherData;
 import org.elasticsearch.action.bulk.BulkProcessor;
@@ -48,7 +47,7 @@ public class ElasticSearchClientTest {
         IndexRequestBuilder indexRequestBuilder = new IndexRequestBuilder(client, IndexAction.INSTANCE);
 
         // The mapping to use:
-        ElasticSearchMapping localWeatherDataMapper = new LocalWeatherDataMapper();
+        IElasticSearchMapping localWeatherDataMapper = new LocalWeatherDataMapper();
 
         // Index to insert to:
         String indexName = "weather_data";
@@ -88,7 +87,7 @@ public class ElasticSearchClientTest {
         IndexRequestBuilder indexRequestBuilder = new IndexRequestBuilder(mockedTransportClient, IndexAction.INSTANCE);
 
         // The mapping to use:
-        ElasticSearchMapping localWeatherDataMapper = new LocalWeatherDataMapper();
+        IElasticSearchMapping localWeatherDataMapper = new LocalWeatherDataMapper();
 
         // Index to insert to:
         String indexName = "weather_data";
@@ -124,7 +123,7 @@ public class ElasticSearchClientTest {
         IndexRequestBuilder indexRequestBuilder = new IndexRequestBuilder(client, IndexAction.INSTANCE);
 
         // The mapping to use:
-        ElasticSearchMapping localWeatherDataMapper = new LocalWeatherDataMapper();
+        IElasticSearchMapping localWeatherDataMapper = new LocalWeatherDataMapper();
 
         // Index to insert to:
         String indexName = "weather_data";
@@ -144,6 +143,9 @@ public class ElasticSearchClientTest {
 
         // Index the Data:
         elasticSearchClient.index(entityToInsert);
+
+        // Flush the Thing:
+        elasticSearchClient.flush();
 
         // Verify, that the TransportClient bulk insert has been called:
         verify(client, times(1)).bulk(anyObject(), anyObject());

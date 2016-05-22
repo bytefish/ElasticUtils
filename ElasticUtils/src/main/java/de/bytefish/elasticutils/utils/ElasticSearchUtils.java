@@ -6,7 +6,7 @@ package de.bytefish.elasticutils.utils;
 import de.bytefish.elasticutils.exceptions.CreateIndexFailedException;
 import de.bytefish.elasticutils.exceptions.IndicesExistsFailedException;
 import de.bytefish.elasticutils.exceptions.PutMappingFailedException;
-import de.bytefish.elasticutils.mapping.ElasticSearchMapping;
+import de.bytefish.elasticutils.mapping.IElasticSearchMapping;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
@@ -21,6 +21,10 @@ import java.io.IOException;
 public class ElasticSearchUtils {
 
     private static final ESLogger log = ESLoggerFactory.getLogger(ElasticSearchUtils.class.getName());
+
+    private ElasticSearchUtils() {
+
+    }
 
     public static IndicesExistsResponse indexExist(Client client, String indexName) {
         try {
@@ -46,7 +50,7 @@ public class ElasticSearchUtils {
         }
     }
 
-    public static PutMappingResponse putMapping(Client client, String indexName, ElasticSearchMapping mapping) {
+    public static PutMappingResponse putMapping(Client client, String indexName, IElasticSearchMapping mapping) {
         try {
             return internalPutMapping(client, indexName, mapping);
         } catch(Exception e) {
@@ -72,7 +76,7 @@ public class ElasticSearchUtils {
         return indexResponse;
     }
 
-    private static PutMappingResponse internalPutMapping(Client client, String indexName, ElasticSearchMapping mapping) throws IOException {
+    private static PutMappingResponse internalPutMapping(Client client, String indexName, IElasticSearchMapping mapping) throws IOException {
 
         final PutMappingRequest putMappingRequest = new PutMappingRequest(indexName)
                 .type(mapping.getIndexType())

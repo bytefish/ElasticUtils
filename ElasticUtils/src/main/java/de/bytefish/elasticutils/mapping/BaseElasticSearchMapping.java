@@ -17,7 +17,7 @@ import org.elasticsearch.index.mapper.object.RootObjectMapper;
 
 import java.io.IOException;
 
-public abstract class BaseElasticSearchMapping implements ElasticSearchMapping {
+public abstract class BaseElasticSearchMapping implements IElasticSearchMapping {
 
     private final String indexType;
     private final String version;

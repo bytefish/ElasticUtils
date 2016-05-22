@@ -5,7 +5,7 @@ package de.bytefish.elasticutils.mapping;
 
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
-public interface ElasticSearchMapping {
+public interface IElasticSearchMapping {
 
     XContentBuilder getMapping();
 

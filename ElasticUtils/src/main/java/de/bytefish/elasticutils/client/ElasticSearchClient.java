@@ -4,8 +4,7 @@
 package de.bytefish.elasticutils.client;
 
 import de.bytefish.elasticutils.client.bulk.configuration.BulkProcessorConfiguration;
-import de.bytefish.elasticutils.mapping.ElasticSearchMapping;
-import de.bytefish.elasticutils.utils.ElasticSearchUtils;
+import de.bytefish.elasticutils.mapping.IElasticSearchMapping;
 import de.bytefish.elasticutils.utils.JsonUtilities;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.index.IndexRequest;
@@ -13,33 +12,20 @@ import org.elasticsearch.client.Client;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Stream;
 
-public class ElasticSearchClient<TEntity> implements AutoCloseable {
+public class ElasticSearchClient<TEntity> implements IElasticSearchClient<TEntity> {
 
     private final Client client;
     private final String indexName;
-    private final ElasticSearchMapping mapping;
+    private final IElasticSearchMapping mapping;
     private final BulkProcessor bulkProcessor;
 
-    public ElasticSearchClient(final Client client, final String indexName, final ElasticSearchMapping mapping, final BulkProcessorConfiguration bulkProcessorConfiguration) {
+    public ElasticSearchClient(final Client client, final String indexName, final IElasticSearchMapping mapping, final BulkProcessorConfiguration bulkProcessorConfiguration) {
         this.client = client;
         this.indexName = indexName;
         this.mapping = mapping;
         this.bulkProcessor = bulkProcessorConfiguration.build(client);
-    }
-
-    public void createIndex() {
-        if(!ElasticSearchUtils.indexExist(client, indexName).isExists()) {
-            ElasticSearchUtils.createIndex(client, indexName);
-        }
-    }
-
-    public void createMapping() {
-        if(ElasticSearchUtils.indexExist(client, indexName).isExists()) {
-            ElasticSearchUtils.putMapping(client, indexName, mapping);
-        }
     }
 
     public void index(TEntity entity) {
@@ -60,7 +46,6 @@ public class ElasticSearchClient<TEntity> implements AutoCloseable {
 
     private IndexRequest createIndexRequest(byte[] messageBytes) {
         return client.prepareIndex()
-                .setId(UUID.randomUUID().toString())
                 .setIndex(indexName)
                 .setType(mapping.getIndexType())
                 .setSource(messageBytes)
