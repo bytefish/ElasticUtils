@@ -12,6 +12,7 @@ import org.elasticsearch.client.Client;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 public class ElasticSearchClient<TEntity> implements IElasticSearchClient<TEntity> {
@@ -56,8 +57,12 @@ public class ElasticSearchClient<TEntity> implements IElasticSearchClient<TEntit
         bulkProcessor.flush();
     }
 
+    public synchronized boolean awaitClose(long timeout, TimeUnit unit) throws InterruptedException {
+        return bulkProcessor.awaitClose(timeout, unit);
+    }
+
     @Override
     public void close() throws Exception {
-        // If we ever need to close opened resources, it would go here ...
+        bulkProcessor.close();
     }
 }

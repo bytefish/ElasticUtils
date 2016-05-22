@@ -12,6 +12,7 @@ import org.elasticsearch.client.Client;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 public interface IElasticSearchClient<TEntity> extends AutoCloseable {
@@ -24,4 +25,5 @@ public interface IElasticSearchClient<TEntity> extends AutoCloseable {
 
     void flush();
 
+    boolean awaitClose(long timeout, TimeUnit unit) throws InterruptedException;
 }

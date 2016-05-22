@@ -22,6 +22,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -72,8 +73,8 @@ public class IntegrationTest {
                 client.index(stream);
             }
 
-            // The Bulk Insert is asynchronous, so we have to wait some time for ElasticSearch to do the insert:
-            Thread.sleep(Duration.ofSeconds(5).toMillis());
+            // The Bulk Insert is asynchronous, we give ElasticSearch some time to do the insert:
+            client.awaitClose(1, TimeUnit.SECONDS);
         }
     }
 
