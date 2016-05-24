@@ -12,7 +12,7 @@ You can add the following dependencies to your pom.xml to include ``elasticutils
 <dependency>
 	<groupId>de.bytefish</groupId>
 	<artifactId>elasticutils</artifactId>
-	<version>0.2</version>
+	<version>0.3</version>
 </dependency>
 ```
 
