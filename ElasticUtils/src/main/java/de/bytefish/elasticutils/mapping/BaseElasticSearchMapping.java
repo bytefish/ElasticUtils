@@ -38,6 +38,8 @@ public abstract class BaseElasticSearchMapping implements IElasticSearchMapping 
         return indexType;
     }
 
+    public String getVersion() { return version; }
+
     public XContentBuilder internalGetMapping() throws IOException {
 
         // Configure the RootObjectMapper:

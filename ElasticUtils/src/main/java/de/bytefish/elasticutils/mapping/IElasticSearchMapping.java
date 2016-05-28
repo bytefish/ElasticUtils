@@ -11,4 +11,6 @@ public interface IElasticSearchMapping {
 
     String getIndexType();
 
+    String getVersion();
+
 }
