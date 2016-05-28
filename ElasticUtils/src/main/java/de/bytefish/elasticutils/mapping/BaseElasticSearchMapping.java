@@ -3,16 +3,15 @@
 
 package de.bytefish.elasticutils.mapping;
 
+import com.google.common.collect.ImmutableMap;
 import de.bytefish.elasticutils.exceptions.GetMappingFailedException;
 import org.elasticsearch.Version;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.ToXContent;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.json.JsonXContent;
-import org.elasticsearch.index.mapper.ContentPath;
-import org.elasticsearch.index.mapper.Mapper;
-import org.elasticsearch.index.mapper.Mapping;
-import org.elasticsearch.index.mapper.MetadataFieldMapper;
+import org.elasticsearch.index.mapper.*;
+import org.elasticsearch.index.mapper.internal.IdFieldMapper;
 import org.elasticsearch.index.mapper.object.RootObjectMapper;
 
 import java.io.IOException;
@@ -51,9 +50,9 @@ public abstract class BaseElasticSearchMapping implements IElasticSearchMapping 
         Mapping mapping = new Mapping(
                 Version.fromString(version),
                 rootObjectMapperBuilder.build(new Mapper.BuilderContext(settingsBuilder.build(), new ContentPath())),
-                new MetadataFieldMapper[] {},
-                new Mapping.SourceTransform[] {},
-                null);
+                getMetaDataFieldMappers(),
+                getSourceTransforms(),
+                getMetaData());
 
         // Turn it into JsonXContent:
         return mapping.toXContent(JsonXContent.contentBuilder().startObject(), ToXContent.EMPTY_PARAMS);
@@ -78,4 +77,16 @@ public abstract class BaseElasticSearchMapping implements IElasticSearchMapping 
     protected abstract void configure(RootObjectMapper.Builder builder);
 
     protected abstract void configure(Settings.Builder builder);
+
+    protected MetadataFieldMapper[] getMetaDataFieldMappers() {
+        return new MetadataFieldMapper[]{};
+    }
+
+    protected Mapping.SourceTransform[] getSourceTransforms() {
+        return new Mapping.SourceTransform[]{};
+    }
+    
+    protected ImmutableMap<String, Object> getMetaData() {
+        return null;
+    }
 }
