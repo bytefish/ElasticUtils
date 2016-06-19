@@ -20,7 +20,7 @@ You can add the following dependencies to your pom.xml to include ``elasticutils
 
 ## Quickstart ##
 
-The Quickstart shows you how to work with ``elasticutils``.
+The Quickstart shows you how to work with ``elasticutils``. It shows you how to use the ``ElasticSearchClient`` and define a mapping.
 
 ### IntegrationTest ###
 
