@@ -2,7 +2,9 @@
 
 ## Description ##
 
-``elasticutils`` is a library for working with Elasticsearch in Java. It greatly simplifies working with the Elasticsearch Mapping API and the Bulk Insert API.
+``elasticutils`` is a library for working with Elasticsearch in Java. 
+
+It greatly simplifies working with the Elasticsearch Mapping API and the Bulk Insert API.
 
 ## Maven Dependencies ##
 
