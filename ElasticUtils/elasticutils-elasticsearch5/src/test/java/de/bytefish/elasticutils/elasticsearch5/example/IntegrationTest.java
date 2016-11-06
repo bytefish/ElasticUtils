@@ -35,35 +35,6 @@ import static java.util.Collections.emptyMap;
 public class IntegrationTest {
 
     @Test
-    public void JsonXContentTest() throws Exception {
-
-        Settings.Builder settingsBuilder = Settings.builder()
-                .put(IndexMetaData.SETTING_VERSION_CREATED, 1)
-                .put(IndexMetaData.SETTING_CREATION_DATE, System.currentTimeMillis());;
-
-        RootObjectMapper.Builder rootObjectMapperBuilder = new RootObjectMapper.Builder("document")
-                .add(new DateFieldMapper.Builder("dateTime"))
-                .add(new ScaledFloatFieldMapper.Builder("temperature").scalingFactor(1))
-                .add(new ScaledFloatFieldMapper.Builder("windSpeed").scalingFactor(1))
-                .add(new ScaledFloatFieldMapper.Builder("stationPressure").scalingFactor(1))
-                .add(new StringFieldMapper.Builder("skyCondition"))
-                .add(new ObjectMapper.Builder("station")
-                        .add(new StringFieldMapper.Builder("wban"))
-                        .add(new StringFieldMapper.Builder("name"))
-                        .add(new StringFieldMapper.Builder("state"))
-                        .add(new StringFieldMapper.Builder("location"))
-                        .add(new GeoPointFieldMapper.Builder("coordinates")
-                                .enableLatLon(true)
-                                .enableGeoHash(false))
-                        .nested(ObjectMapper.Nested.newNested(true, false)));
-
-
-        RootObjectMapper rootObjectMapper = rootObjectMapperBuilder.build(new Mapper.BuilderContext(settingsBuilder.build(), new ContentPath(1)));
-
-           String a = rootObjectMapper.toXContent(XContentFactory.jsonBuilder().startObject(), new ToXContent.MapParams(emptyMap())).endObject().string();
-    }
-
-    @Test
     public void bulkProcessingTest() throws Exception {
 
         // Weather Data Simulation between 2013-01-01 and 2013-01-03 in 15 Minute intervals:

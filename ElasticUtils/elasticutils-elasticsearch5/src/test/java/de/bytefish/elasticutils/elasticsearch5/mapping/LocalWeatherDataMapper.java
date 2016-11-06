@@ -4,8 +4,6 @@
 package de.bytefish.elasticutils.elasticsearch5.mapping;
 
 import org.elasticsearch.Version;
-import org.elasticsearch.cluster.metadata.IndexMetaData;
-import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.mapper.*;
 
 public class LocalWeatherDataMapper extends BaseElasticSearchMapping {

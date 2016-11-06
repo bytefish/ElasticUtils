@@ -2,7 +2,7 @@
 
 ## Description ##
 
-``elasticutils`` is a library for working with Elasticsearch in Java. 
+``elasticutils`` is a library for working with Elasticsearch 2.3 and Elasticsearch 5 in Java. 
 
 It greatly simplifies working with the Elasticsearch Mapping API and the Bulk Insert API.
 
@@ -22,38 +22,189 @@ You can add the following dependencies to your pom.xml to include ``elasticutils
 
 The Quickstart shows you how to work with ``elasticutils``. It shows you how to use the ``ElasticSearchClient`` and define a mapping.
 
-### IntegrationTest ###
+### Elasticsearch 5.0.0 ###
+
+#### Integration Test ####
+
+```java
+@Ignore("Integration Test with Fake Data")
+public class IntegrationTest {
+
+    @Test
+    public void bulkProcessingTest() throws Exception {
+
+        // Weather Data Simulation between 2013-01-01 and 2013-01-03 in 15 Minute intervals:
+        LocalWeatherDataSimulator simulator = new LocalWeatherDataSimulator(
+                LocalDateTime.of(2013, 1, 1, 0, 0),
+                LocalDateTime.of(2013, 1, 3, 0, 0),
+                Duration.ofMinutes(15));
+
+        // Index to work on:
+        String indexName = "weather_data";
+
+        // Describes how to build the Index:
+        LocalWeatherDataMapper mapping = new LocalWeatherDataMapper();
+
+        // Bulk Options for the Wrapped Client:
+        BulkProcessorConfiguration bulkConfiguration = new BulkProcessorConfiguration(BulkProcessingOptions.builder()
+                .setBulkActions(100)
+                .build());
+
+        // Create a new TransportClient with the default options:
+        try (TransportClient transportClient = new PreBuiltTransportClient(Settings.EMPTY)) {
+
+            // Add the Transport Address to the TransportClient:
+            transportClient
+                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9300));
+
+            // Create the Index, if it doesn't exist yet:
+            createIndex(transportClient, indexName);
+
+            // Create the Mapping, if it doesn't exist yet:
+            createMapping(transportClient, indexName, mapping);
+
+            // Now wrap the Elastic client in our bulk processing client:
+            ElasticSearchClient<LocalWeatherData> client = new ElasticSearchClient<>(transportClient, indexName, mapping, bulkConfiguration);
+
+            // Create some data to work with:
+            try (Stream<LocalWeatherData> stream = simulator.generate()) {
+                // Consume the Stream with the ElasticSearchClient:
+                client.index(stream);
+            }
+
+            // The Bulk Insert is asynchronous, we give ElasticSearch some time to do the insert:
+            client.awaitClose(1, TimeUnit.SECONDS);
+        }
+    }
+
+    private void createIndex(Client client, String indexName) {
+        if(!ElasticSearchUtils.indexExist(client, indexName).isExists()) {
+            ElasticSearchUtils.createIndex(client, indexName);
+        }
+    }
+
+    private void createMapping(Client client, String indexName, IElasticSearchMapping mapping) {
+        if(ElasticSearchUtils.indexExist(client, indexName).isExists()) {
+            ElasticSearchUtils.putMapping(client, indexName, mapping);
+        }
+    }
+}
+```
+
+#### Domain Model ####
+
+##### LocalWeatherData #####
+
+```java
+public class LocalWeatherData {
+
+    @JsonProperty("station")
+    public Station station;
+
+    @JsonProperty("dateTime")
+    public Date dateTime;
+
+    @JsonProperty("temperature")
+    public Float temperature;
+
+    @JsonProperty("windSpeed")
+    public Float windSpeed;
+
+    @JsonProperty("stationPressure")
+    public Float stationPressure;
+
+    @JsonProperty("skyCondition")
+    public String skyCondition;
+}
+```
+
+##### Station #####
+
+```java
+public class Station {
+
+    @JsonProperty("wban")
+    public String wban;
+
+    @JsonProperty("name")
+    public String name;
+
+    @JsonProperty("state")
+    public String state;
+
+    @JsonProperty("location")
+    public String location;
+
+    @JsonProperty("coordinates")
+    public GeoLocation geoLocation;
+
+}
+```
+
+##### GeoLocation #####
+
+```java
+public class GeoLocation {
+
+    @JsonProperty("lat")
+    public double lat;
+
+    @JsonProperty("lon")
+    public double lon;
+
+    public GeoLocation() {}
+
+    public GeoLocation(double lat, double lon) {
+        this.lat = lat;
+        this.lon = lon;
+    }
+}
+```
+
+#### Mapping ####
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-package de.bytefish.elasticutils.example;
+package de.bytefish.elasticutils.elasticsearch5.mapping;
 
-import de.bytefish.elasticutils.client.ElasticSearchClient;
-import de.bytefish.elasticutils.client.bulk.configuration.BulkProcessorConfiguration;
-import de.bytefish.elasticutils.client.bulk.options.BulkProcessingOptions;
-import de.bytefish.elasticutils.example.simulation.LocalWeatherDataSimulator;
-import de.bytefish.elasticutils.mapping.IElasticSearchMapping;
-import de.bytefish.elasticutils.mapping.LocalWeatherDataMapper;
-import de.bytefish.elasticutils.model.LocalWeatherData;
-import de.bytefish.elasticutils.utils.ElasticSearchUtils;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.elasticsearch.Version;
+import org.elasticsearch.index.mapper.*;
 
-import java.net.InetAddress;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+public class LocalWeatherDataMapper extends BaseElasticSearchMapping {
 
-import static org.elasticsearch.client.Requests.refreshRequest;
+    private static final String INDEX_TYPE = "document";
 
+    public LocalWeatherDataMapper() {
+        super(INDEX_TYPE, Version.V_5_0_0);
+    }
+
+    @Override
+    protected void configureRootObjectBuilder(RootObjectMapper.Builder builder) {
+        builder
+                .add(new DateFieldMapper.Builder("dateTime"))
+                .add(new ScaledFloatFieldMapper.Builder("temperature").scalingFactor(1))
+                .add(new ScaledFloatFieldMapper.Builder("windSpeed").scalingFactor(1))
+                .add(new ScaledFloatFieldMapper.Builder("stationPressure").scalingFactor(1))
+                .add(new TextFieldMapper.Builder("skyCondition"))
+                .add(new ObjectMapper.Builder("station")
+                        .add(new TextFieldMapper.Builder("wban"))
+                        .add(new TextFieldMapper.Builder("name"))
+                        .add(new TextFieldMapper.Builder("state"))
+                        .add(new TextFieldMapper.Builder("location"))
+                        .add(new GeoPointFieldMapper.Builder("coordinates")
+                                .enableGeoHash(false))
+                        .nested(ObjectMapper.Nested.newNested(true, false)));
+    }
+}
+```
+
+### Elasticsearch 2.3 ###
+
+#### Integration Test ####
+
+```java
 @Ignore("Integration Test with Fake Data")
 public class IntegrationTest {
 
@@ -118,19 +269,11 @@ public class IntegrationTest {
 }
 ```
 
-### Model ###
+#### Domain Model ####
 
-#### LocalWeatherData ####
+##### LocalWeatherData #####
+
 ```java
-// Copyright (c) Philipp Wagner. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-package elastic.model;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Date;
-
 public class LocalWeatherData {
 
     @JsonProperty("station")
@@ -153,17 +296,9 @@ public class LocalWeatherData {
 }
 ```
 
-#### Station ####
+##### Station #####
 
 ```java
-// Copyright (c) Philipp Wagner. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-package elastic.model;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.elasticsearch.common.geo.GeoPoint;
-
 public class Station {
 
     @JsonProperty("wban")
@@ -184,16 +319,9 @@ public class Station {
 }
 ```
 
-#### GeoLocation ####
+##### GeoLocation #####
 
 ```java
-// Copyright (c) Philipp Wagner. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-package elastic.model;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class GeoLocation {
 
     @JsonProperty("lat")
@@ -211,16 +339,15 @@ public class GeoLocation {
 }
 ```
 
-### Mapping ###
+#### Mapping ####
 
 ```java
 // Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-package de.bytefish.elasticutils.mapping;
+package de.bytefish.elasticutils.elasticsearch2.mapping;
 
-import org.elasticsearch.cluster.metadata.IndexMetaData;
-import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.Version;
 import org.elasticsearch.index.mapper.core.DateFieldMapper;
 import org.elasticsearch.index.mapper.core.FloatFieldMapper;
 import org.elasticsearch.index.mapper.core.StringFieldMapper;
@@ -233,11 +360,11 @@ public class LocalWeatherDataMapper extends BaseElasticSearchMapping {
     private static final String INDEX_TYPE = "document";
 
     public LocalWeatherDataMapper() {
-        super(INDEX_TYPE, "1.0.0");
+        super(INDEX_TYPE, Version.V_2_3_2);
     }
 
     @Override
-    protected void configure(RootObjectMapper.Builder builder) {
+    protected void configureRootObjectBuilder(RootObjectMapper.Builder builder) {
         builder
                 .add(new DateFieldMapper.Builder("dateTime"))
                 .add(new FloatFieldMapper.Builder("temperature"))
@@ -253,13 +380,6 @@ public class LocalWeatherDataMapper extends BaseElasticSearchMapping {
                                 .enableLatLon(true)
                                 .enableGeoHash(false))
                         .nested(ObjectMapper.Nested.newNested(true, false)));
-    }
-
-    @Override
-    protected void configure(Settings.Builder builder) {
-        builder
-                .put(IndexMetaData.SETTING_VERSION_CREATED, 1)
-                .put(IndexMetaData.SETTING_CREATION_DATE, System.currentTimeMillis());
     }
 }
 ```
