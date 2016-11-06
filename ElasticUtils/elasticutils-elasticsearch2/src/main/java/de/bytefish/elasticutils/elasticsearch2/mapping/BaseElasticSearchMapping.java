@@ -6,6 +6,7 @@ package de.bytefish.elasticutils.elasticsearch2.mapping;
 import com.google.common.collect.ImmutableMap;
 import de.bytefish.elasticutils.exceptions.GetMappingFailedException;
 import org.elasticsearch.Version;
+import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.ToXContent;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -14,13 +15,15 @@ import org.elasticsearch.index.mapper.*;
 import org.elasticsearch.index.mapper.object.RootObjectMapper;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class BaseElasticSearchMapping implements IElasticSearchMapping {
 
     private final String indexType;
-    private final String version;
+    private final Version version;
 
-    public BaseElasticSearchMapping(String indexType, String version) {
+    public BaseElasticSearchMapping(String indexType, Version version) {
         this.indexType = indexType;
         this.version = version;
     }
@@ -37,7 +40,7 @@ public abstract class BaseElasticSearchMapping implements IElasticSearchMapping 
         return indexType;
     }
 
-    public String getVersion() { return version; }
+    public Version getVersion() { return version; }
 
     public XContentBuilder internalGetMapping() throws IOException {
 
@@ -49,7 +52,7 @@ public abstract class BaseElasticSearchMapping implements IElasticSearchMapping 
 
         // Build the Mapping:
         Mapping mapping = new Mapping(
-                Version.fromString(version),
+                version,
                 rootObjectMapperBuilder.build(new Mapper.BuilderContext(settingsBuilder.build(), new ContentPath())),
                 getMetaDataFieldMappers(),
                 getSourceTransforms(),
@@ -59,35 +62,59 @@ public abstract class BaseElasticSearchMapping implements IElasticSearchMapping 
         return mapping.toXContent(JsonXContent.contentBuilder().startObject(), ToXContent.EMPTY_PARAMS);
     }
 
-    private Settings.Builder getSettingsBuilder() {
-        Settings.Builder settingsBuilder = Settings.builder();
-
-        configure(settingsBuilder);
-
-        return settingsBuilder;
-    }
-
     private RootObjectMapper.Builder getRootObjectBuilder() {
         RootObjectMapper.Builder rootObjectMapperBuilder = new RootObjectMapper.Builder(indexType);
 
-        configure(rootObjectMapperBuilder);
+        configureRootObjectBuilder(rootObjectMapperBuilder);
 
         return rootObjectMapperBuilder;
     }
 
-    protected abstract void configure(RootObjectMapper.Builder builder);
+    private Settings.Builder getSettingsBuilder() {
 
-    protected abstract void configure(Settings.Builder builder);
+        Settings.Builder settingsBuilder = Settings.builder()
+                .put(IndexMetaData.SETTING_VERSION_CREATED, version)
+                .put(IndexMetaData.SETTING_CREATION_DATE, System.currentTimeMillis());
 
-    protected MetadataFieldMapper[] getMetaDataFieldMappers() {
-        return new MetadataFieldMapper[]{};
+        configureSettingsBuilder(settingsBuilder);
+
+        return settingsBuilder;
+    }
+
+    private MetadataFieldMapper[] getMetaDataFieldMappers() {
+
+        List<MetadataFieldMapper> metadataFieldMapper = new ArrayList<>();
+
+        configureMetaDataFieldMappers(metadataFieldMapper);
+
+        return metadataFieldMapper.toArray(new MetadataFieldMapper[metadataFieldMapper.size()]);
     }
 
     protected Mapping.SourceTransform[] getSourceTransforms() {
-        return new Mapping.SourceTransform[]{};
+        List<Mapping.SourceTransform> sourceTransforms = new ArrayList<>();
+
+        configureSourceTransforms(sourceTransforms);
+
+        return sourceTransforms.toArray(new Mapping.SourceTransform[sourceTransforms.size()]);
     }
     
-    protected ImmutableMap<String, Object> getMetaData() {
-        return null;
+    private ImmutableMap<String, Object> getMetaData()
+    {
+        ImmutableMap.Builder<String, Object> metaDataBuilder = new ImmutableMap.Builder<>();
+
+        configureMetaDataBuilder(metaDataBuilder);
+
+        return metaDataBuilder.build();
     }
+
+    protected abstract void configureRootObjectBuilder(RootObjectMapper.Builder builder);
+
+    protected void configureSettingsBuilder(Settings.Builder builder) {}
+
+    protected void configureMetaDataFieldMappers(List<MetadataFieldMapper> metadataFieldMapper) { }
+
+    protected void configureSourceTransforms(List<Mapping.SourceTransform> sourceTransforms) { }
+
+    protected void configureMetaDataBuilder(ImmutableMap.Builder<String, Object> metaDataBuilder) { }
+
 }

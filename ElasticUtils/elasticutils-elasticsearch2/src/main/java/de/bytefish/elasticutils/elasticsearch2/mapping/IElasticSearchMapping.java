@@ -3,6 +3,7 @@
 
 package de.bytefish.elasticutils.elasticsearch2.mapping;
 
+import org.elasticsearch.Version;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
 public interface IElasticSearchMapping {
@@ -11,6 +12,6 @@ public interface IElasticSearchMapping {
 
     String getIndexType();
 
-    String getVersion();
+    Version getVersion();
 
 }

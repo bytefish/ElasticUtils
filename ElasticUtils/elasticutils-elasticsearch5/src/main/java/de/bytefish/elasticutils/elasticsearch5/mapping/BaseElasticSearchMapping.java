@@ -6,6 +6,7 @@ package de.bytefish.elasticutils.elasticsearch5.mapping;
 import com.google.common.collect.ImmutableMap;
 import de.bytefish.elasticutils.exceptions.GetMappingFailedException;
 import org.elasticsearch.Version;
+import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.ToXContent;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -13,14 +14,16 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.mapper.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.util.Collections.emptyMap;
 
 public abstract class BaseElasticSearchMapping implements IElasticSearchMapping {
     private final String indexType;
-    private final String version;
+    private final Version version;
 
-    public BaseElasticSearchMapping(String indexType, String version) {
+    public BaseElasticSearchMapping(String indexType, Version version) {
         this.indexType = indexType;
         this.version = version;
     }
@@ -37,7 +40,7 @@ public abstract class BaseElasticSearchMapping implements IElasticSearchMapping 
         return indexType;
     }
 
-    public String getVersion() { return version; }
+    public Version getVersion() { return version; }
 
     public XContentBuilder internalGetMapping() throws IOException {
 
@@ -50,7 +53,7 @@ public abstract class BaseElasticSearchMapping implements IElasticSearchMapping 
         //new Mapping(arg0, arg1, arg2, arg3)getSourceTransforms(),
         // Build the Mapping:
         Mapping mapping = new Mapping(
-                Version.fromString(version),
+                version,
                 rootObjectMapperBuilder.build(new Mapper.BuilderContext(settingsBuilder.build(), new ContentPath(1))),
                 getMetaDataFieldMappers(),
                 getMeta());
@@ -60,9 +63,12 @@ public abstract class BaseElasticSearchMapping implements IElasticSearchMapping 
     }
 
     private Settings.Builder getSettingsBuilder() {
-        Settings.Builder settingsBuilder = Settings.builder();
 
-        configure(settingsBuilder);
+        Settings.Builder settingsBuilder = Settings.builder()
+                .put(IndexMetaData.SETTING_VERSION_CREATED, version)
+                .put(IndexMetaData.SETTING_CREATION_DATE, System.currentTimeMillis());
+
+        configureSettingsBuilder(settingsBuilder);
 
         return settingsBuilder;
     }
@@ -71,20 +77,34 @@ public abstract class BaseElasticSearchMapping implements IElasticSearchMapping 
 
         RootObjectMapper.Builder rootObjectMapperBuilder = new RootObjectMapper.Builder(indexType);
 
-        configure(rootObjectMapperBuilder);
+        configureRootObjectBuilder(rootObjectMapperBuilder);
 
         return rootObjectMapperBuilder;
     }
 
-    protected abstract void configure(RootObjectMapper.Builder builder);
+    private MetadataFieldMapper[] getMetaDataFieldMappers() {
 
-    protected abstract void configure(Settings.Builder builder);
+        List<MetadataFieldMapper> metadataFieldMapper = new ArrayList<>();
 
-    protected MetadataFieldMapper[] getMetaDataFieldMappers() {
-        return new MetadataFieldMapper[]{};
+        configureMetaDataFieldMappers(metadataFieldMapper);
+
+        return metadataFieldMapper.toArray(new MetadataFieldMapper[metadataFieldMapper.size()]);
     }
 
-    protected ImmutableMap<String, Object> getMeta() {
-        return new ImmutableMap.Builder<String, Object>().build();
+    private ImmutableMap<String, Object> getMeta() {
+
+        ImmutableMap.Builder<String, Object> metaFieldsBuilder = new ImmutableMap.Builder<String, Object>();
+
+        configureMetaFields(metaFieldsBuilder);
+
+        return metaFieldsBuilder.build();
     }
+
+    protected abstract void configureRootObjectBuilder(RootObjectMapper.Builder builder);
+
+    protected void configureSettingsBuilder(Settings.Builder builder) {}
+
+    protected void configureMetaDataFieldMappers(List<MetadataFieldMapper> metadataFieldMapper) { }
+
+    protected void configureMetaFields(ImmutableMap.Builder<String, Object> metaFieldsBuilder) { }
 }

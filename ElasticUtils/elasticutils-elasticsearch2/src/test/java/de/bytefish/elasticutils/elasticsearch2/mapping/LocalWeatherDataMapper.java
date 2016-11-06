@@ -3,6 +3,7 @@
 
 package de.bytefish.elasticutils.elasticsearch2.mapping;
 
+import org.elasticsearch.Version;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.mapper.core.DateFieldMapper;
@@ -17,11 +18,11 @@ public class LocalWeatherDataMapper extends BaseElasticSearchMapping {
     private static final String INDEX_TYPE = "document";
 
     public LocalWeatherDataMapper() {
-        super(INDEX_TYPE, "1.0.0");
+        super(INDEX_TYPE, Version.V_2_3_2);
     }
 
     @Override
-    protected void configure(RootObjectMapper.Builder builder) {
+    protected void configureRootObjectBuilder(RootObjectMapper.Builder builder) {
         builder
                 .add(new DateFieldMapper.Builder("dateTime"))
                 .add(new FloatFieldMapper.Builder("temperature"))
@@ -37,12 +38,5 @@ public class LocalWeatherDataMapper extends BaseElasticSearchMapping {
                                 .enableLatLon(true)
                                 .enableGeoHash(false))
                         .nested(ObjectMapper.Nested.newNested(true, false)));
-    }
-
-    @Override
-    protected void configure(Settings.Builder builder) {
-        builder
-                .put(IndexMetaData.SETTING_VERSION_CREATED, 1)
-                .put(IndexMetaData.SETTING_CREATION_DATE, System.currentTimeMillis());
     }
 }
