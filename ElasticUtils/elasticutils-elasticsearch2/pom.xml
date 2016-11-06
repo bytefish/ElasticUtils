@@ -7,7 +7,7 @@
     <parent>
         <groupId>de.bytefish.elasticutils</groupId>
         <artifactId>elasticutils-parent</artifactId>
-        <version>0.1</version>
+        <version>0.4</version>
         <relativePath>..</relativePath>
     </parent>
     

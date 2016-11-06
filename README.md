@@ -2,7 +2,7 @@
 
 ## Description ##
 
-``elasticutils`` is a library for working with Elasticsearch 2.3 and Elasticsearch 5 in Java. 
+``elasticutils`` is a library for working with Elasticsearch 2.x and Elasticsearch 5.x in Java. 
 
 It greatly simplifies working with the Elasticsearch Mapping API and the Bulk Insert API.
 
@@ -12,9 +12,29 @@ You can add the following dependencies to your pom.xml to include ``elasticutils
 
 ```xml
 <dependency>
-	<groupId>de.bytefish</groupId>
-	<artifactId>elasticutils</artifactId>
-	<version>0.3</version>
+	<groupId>de.bytefish.elasticutils</groupId>
+	<artifactId>elasticutils-core</artifactId>
+	<version>0.4</version>
+</dependency>
+```
+
+### Maven Dependency for Elasticsearch 2.x ###
+
+```xml
+<dependency>
+	<groupId>de.bytefish.elasticutils</groupId>
+	<artifactId>elasticutils-elasticsearch2</artifactId>
+	<version>0.4</version>
+</dependency>
+```
+
+### Maven Dependency for Elasticsearch 5.x ###
+
+```xml
+<dependency>
+	<groupId>de.bytefish.elasticutils</groupId>
+	<artifactId>elasticutils-elasticsearch5</artifactId>
+	<version>0.4</version>
 </dependency>
 ```
 

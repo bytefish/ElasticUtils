@@ -6,7 +6,7 @@
 
     <groupId>de.bytefish.elasticutils</groupId>
     <artifactId>elasticutils-parent</artifactId>
-    <version>0.1</version>
+    <version>0.4</version>
 
     <name>elasticutils</name>
     <packaging>pom</packaging>
@@ -182,11 +182,16 @@
     <dependencies>
 
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
             <version>2.6.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.6.2</version>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
