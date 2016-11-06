@@ -6,12 +6,7 @@ package de.bytefish.elasticutils.elasticsearch5.mapping;
 import org.elasticsearch.Version;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.index.mapper.DateFieldMapper;
-import org.elasticsearch.index.mapper.ScaledFloatFieldMapper;
-import org.elasticsearch.index.mapper.StringFieldMapper;
-import org.elasticsearch.index.mapper.GeoPointFieldMapper;
-import org.elasticsearch.index.mapper.ObjectMapper;
-import org.elasticsearch.index.mapper.RootObjectMapper;
+import org.elasticsearch.index.mapper.*;
 
 public class LocalWeatherDataMapper extends BaseElasticSearchMapping {
 
@@ -28,12 +23,12 @@ public class LocalWeatherDataMapper extends BaseElasticSearchMapping {
                 .add(new ScaledFloatFieldMapper.Builder("temperature").scalingFactor(1))
                 .add(new ScaledFloatFieldMapper.Builder("windSpeed").scalingFactor(1))
                 .add(new ScaledFloatFieldMapper.Builder("stationPressure").scalingFactor(1))
-                .add(new StringFieldMapper.Builder("skyCondition"))
+                .add(new TextFieldMapper.Builder("skyCondition"))
                 .add(new ObjectMapper.Builder("station")
-                        .add(new StringFieldMapper.Builder("wban"))
-                        .add(new StringFieldMapper.Builder("name"))
-                        .add(new StringFieldMapper.Builder("state"))
-                        .add(new StringFieldMapper.Builder("location"))
+                        .add(new TextFieldMapper.Builder("wban"))
+                        .add(new TextFieldMapper.Builder("name"))
+                        .add(new TextFieldMapper.Builder("state"))
+                        .add(new TextFieldMapper.Builder("location"))
                         .add(new GeoPointFieldMapper.Builder("coordinates")
                                 .enableGeoHash(false))
                         .nested(ObjectMapper.Nested.newNested(true, false)));
