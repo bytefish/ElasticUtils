@@ -1,0 +1,39 @@
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package de.bytefish.elasticutils.elasticsearch2.client.bulk.listener;
+
+import org.elasticsearch.action.bulk.BulkProcessor;
+import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.common.logging.ESLogger;
+import org.elasticsearch.common.logging.ESLoggerFactory;
+
+public class LoggingBulkProcessorListener implements BulkProcessor.Listener {
+
+    private static final ESLogger log = ESLoggerFactory.getLogger(LoggingBulkProcessorListener.class.getName());
+
+    public LoggingBulkProcessorListener() {
+    }
+
+    @Override
+    public void beforeBulk(long executionId, BulkRequest request) {
+        if(log.isDebugEnabled()) {
+            log.debug("ExecutionId = {}, Actions = {}, Estimated Size = {}", executionId, request.numberOfActions(), request.estimatedSizeInBytes());
+        }
+    }
+
+    @Override
+    public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
+        if(log.isDebugEnabled()) {
+            log.debug("ExecutionId = {}, Actions = {}, Estimated Size = {}", executionId, request.numberOfActions(), request.estimatedSizeInBytes());
+        }
+    }
+
+    @Override
+    public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
+        if(log.isErrorEnabled()) {
+            log.error("ExecutionId = {}, Error = {}", executionId, failure);
+        }
+    }
+}
