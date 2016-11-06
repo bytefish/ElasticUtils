@@ -2,9 +2,11 @@
 
 ## Description ##
 
-``elasticutils`` is a library for working with Elasticsearch 2.x and Elasticsearch 5.x in Java. 
+[ElasticUtils] is a library for working with Elasticsearch 2.x and Elasticsearch 5.x in Java. 
 
-It greatly simplifies working with the Elasticsearch Mapping API and the Bulk Insert API.
+The Elasticsearch Java API is quite complex when it comes to the Bulk Insert API and the Mapping API. So I wrote the [ElasticUtils] 
+library, which hides most of the complexity when working with Elasticsearch API. It greatly simplifies working with the Elasticsearch 
+Mapping API and the Bulk Insert API.
 
 ## Maven Dependencies ##
 
@@ -403,3 +405,5 @@ public class LocalWeatherDataMapper extends BaseElasticSearchMapping {
     }
 }
 ```
+
+[ElasticUtils]: https://www.github.com/bytefish/ElasticUtils
