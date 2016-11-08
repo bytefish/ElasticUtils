@@ -1,7 +1,7 @@
 // Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-package de.bytefish.elasticutils.client.bulk.options;
+package de.bytefish.elasticutils.elasticsearch2.client.bulk.options;
 
 import de.bytefish.elasticutils.elasticsearch2.client.bulk.options.BulkProcessingOptions;
 import org.elasticsearch.action.bulk.BackoffPolicy;
