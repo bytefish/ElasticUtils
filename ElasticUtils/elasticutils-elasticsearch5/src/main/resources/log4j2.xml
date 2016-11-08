@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+	<Properties>
+		<Property name="projectPrefix">ES_LCD</Property>
+		<Property name="rawPattern">%d %-5p [%t] %C{2} (%F:%L) - %m%n</Property>
+		<Property name="coloredPattern">%d %highlight{%-5p}{FATAL=bright red,
+			ERROR=red, WARN=yellow, INFO=cyan, DEBUG=green, TRACE=bright blue}
+			%style{[%t] %C{2} (%F:%L) -}{bright,black} %m%n</Property>
+		<Property name="fileName">log/${projectPrefix}.log</Property>
+		<Property name="filePattern">log/${projectPrefix}-%i.log</Property>
+	</Properties>
+	<Appenders>
+		<Console name="Stdout" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n" />
+			<!--<PatternLayout pattern="${coloredPattern}"/> -->
+		</Console>
+		<RollingFile name="Logfile" fileName="${fileName}"
+			filePattern="${filePattern}">
+			<PatternLayout pattern="${rawPattern}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="16 MB" />
+			</Policies>
+			<DefaultRolloverStrategy fileIndex="min" max="16" />
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<Root level="info">
+			<AppenderRef ref="Stdout" />
+			<AppenderRef ref="Logfile" />
+		</Root>
+	</Loggers>
+</Configuration>
