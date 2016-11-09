@@ -1,7 +1,7 @@
 // Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-package de.bytefish.elasticutils.client.bulk.listener;
+package de.bytefish.elasticutils.elasticsearch2.client.bulk.listener;
 
 
 import de.bytefish.elasticutils.elasticsearch2.client.bulk.listener.LoggingBulkProcessorListener;
