@@ -44,6 +44,8 @@ You can add the following dependencies to your pom.xml to include ``elasticutils
 
 The Quickstart shows you how to work with [ElasticUtils]. It shows you how to use the ``ElasticSearchClient`` and define a Mapping for Elasticsearch 2.x and Elasticsearch 5.x.
 
+A complete example application using [ElasticUtils] can be found at: [http://bytefish.de/blog/elasticsearch_java](http://bytefish.de/blog/elasticsearch_java).
+
 ### Elasticsearch 2.3 ###
 
 #### Integration Test ####
