@@ -16,7 +16,7 @@ You can add the following dependencies to your pom.xml to include ``elasticutils
 <dependency>
 	<groupId>de.bytefish.elasticutils</groupId>
 	<artifactId>elasticutils-core</artifactId>
-	<version>0.4</version>
+	<version>0.5</version>
 </dependency>
 ```
 
@@ -26,7 +26,7 @@ You can add the following dependencies to your pom.xml to include ``elasticutils
 <dependency>
 	<groupId>de.bytefish.elasticutils</groupId>
 	<artifactId>elasticutils-elasticsearch2</artifactId>
-	<version>0.4</version>
+	<version>0.5</version>
 </dependency>
 ```
 
@@ -36,7 +36,7 @@ You can add the following dependencies to your pom.xml to include ``elasticutils
 <dependency>
 	<groupId>de.bytefish.elasticutils</groupId>
 	<artifactId>elasticutils-elasticsearch5</artifactId>
-	<version>0.4</version>
+	<version>0.5</version>
 </dependency>
 ```
 

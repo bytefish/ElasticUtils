@@ -6,7 +6,7 @@
 
     <groupId>de.bytefish.elasticutils</groupId>
     <artifactId>elasticutils-parent</artifactId>
-    <version>0.4</version>
+    <version>0.5</version>
 
     <name>elasticutils</name>
     <packaging>pom</packaging>
@@ -74,6 +74,10 @@
             <name>Philipp Wagner</name>
             <url>http://www.bytefish.de</url>
             <id>bytefish</id>
+        </developer>
+        <developer>
+            <name>Kartik Asooja</name>
+            <url>https://github.com/kasooja</url>
         </developer>
     </developers>
 
