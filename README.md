@@ -418,4 +418,210 @@ public class LocalWeatherDataMapper extends BaseElasticSearchMapping {
 }
 ```
 
+
+### Elasticsearch 6.5.1 ###
+
+#### Integration Test ####
+
+```java
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package de.bytefish.elasticutils.elasticsearch6.example;
+
+import de.bytefish.elasticutils.elasticsearch6.client.ElasticSearchClient;
+import de.bytefish.elasticutils.elasticsearch6.client.bulk.configuration.BulkProcessorConfiguration;
+import de.bytefish.elasticutils.elasticsearch6.client.bulk.options.BulkProcessingOptions;
+import de.bytefish.elasticutils.elasticsearch6.example.simulation.LocalWeatherDataSimulator;
+import de.bytefish.elasticutils.elasticsearch6.mapping.IElasticSearchMapping;
+import de.bytefish.elasticutils.elasticsearch6.mapping.LocalWeatherDataMapper;
+import de.bytefish.elasticutils.elasticsearch6.model.LocalWeatherData;
+import de.bytefish.elasticutils.elasticsearch6.utils.ElasticSearchUtils;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.net.InetAddress;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+
+@Ignore("Integration Test with Fake Data")
+public class IntegrationTest {
+
+    @Test
+    public void bulkProcessingTest() throws Exception {
+
+        // Weather Data Simulation between 2013-01-01 and 2013-01-03 in 15 Minute intervals:
+        LocalWeatherDataSimulator simulator = new LocalWeatherDataSimulator(
+                LocalDateTime.of(2013, 1, 1, 0, 0),
+                LocalDateTime.of(2013, 1, 3, 0, 0),
+                Duration.ofMinutes(15));
+
+        // Index to work on:
+        String indexName = "weather_data";
+
+        // Describes how to build the Index:
+        LocalWeatherDataMapper mapping = new LocalWeatherDataMapper();
+
+        // Bulk Options for the Wrapped Client:
+        BulkProcessorConfiguration bulkConfiguration = new BulkProcessorConfiguration(BulkProcessingOptions.builder()
+                .setBulkActions(100)
+                .build());
+
+        // Create a new TransportClient with the default options:
+        try (TransportClient transportClient = new PreBuiltTransportClient(Settings.EMPTY)) {
+
+            // Add the Transport Address to the TransportClient:
+            transportClient.addTransportAddress(new TransportAddress(InetAddress.getByName("127.0.0.1"), 9300));
+
+            // Create the Index, if it doesn't exist yet:
+            createIndex(transportClient, indexName);
+
+            // Create the Mapping, if it doesn't exist yet:
+            createMapping(transportClient, indexName, mapping);
+
+            // Now wrap the Elastic client in our bulk processing client:
+            ElasticSearchClient<LocalWeatherData> client = new ElasticSearchClient<>(transportClient, indexName, mapping, bulkConfiguration);
+
+            // Create some data to work with:
+            try (Stream<LocalWeatherData> stream = simulator.generate()) {
+                // Consume the Stream with the ElasticSearchClient:
+                client.index(stream);
+            }
+
+            // The Bulk Insert is asynchronous, we give ElasticSearch some time to do the insert:
+            client.awaitClose(1, TimeUnit.SECONDS);
+        }
+    }
+
+    private void createIndex(Client client, String indexName) {
+        if(!ElasticSearchUtils.indexExist(client, indexName).isExists()) {
+            ElasticSearchUtils.createIndex(client, indexName);
+        }
+    }
+
+    private void createMapping(Client client, String indexName, IElasticSearchMapping mapping) {
+        if(ElasticSearchUtils.indexExist(client, indexName).isExists()) {
+            ElasticSearchUtils.putMapping(client, indexName, mapping);
+        }
+    }
+}
+```
+
+#### Domain Model ####
+
+##### LocalWeatherData #####
+
+```java
+public class LocalWeatherData {
+
+    @JsonProperty("station")
+    public Station station;
+
+    @JsonProperty("dateTime")
+    public Date dateTime;
+
+    @JsonProperty("temperature")
+    public Float temperature;
+
+    @JsonProperty("windSpeed")
+    public Float windSpeed;
+
+    @JsonProperty("stationPressure")
+    public Float stationPressure;
+
+    @JsonProperty("skyCondition")
+    public String skyCondition;
+}
+```
+
+##### Station #####
+
+```java
+public class Station {
+
+    @JsonProperty("wban")
+    public String wban;
+
+    @JsonProperty("name")
+    public String name;
+
+    @JsonProperty("state")
+    public String state;
+
+    @JsonProperty("location")
+    public String location;
+
+    @JsonProperty("coordinates")
+    public GeoLocation geoLocation;
+
+}
+```
+
+##### GeoLocation #####
+
+```java
+public class GeoLocation {
+
+    @JsonProperty("lat")
+    public double lat;
+
+    @JsonProperty("lon")
+    public double lon;
+
+    public GeoLocation() {}
+
+    public GeoLocation(double lat, double lon) {
+        this.lat = lat;
+        this.lon = lon;
+    }
+}
+```
+
+#### Mapping ####
+
+```java
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+package de.bytefish.elasticutils.elasticsearch6.mapping;
+
+import org.elasticsearch.Version;
+import org.elasticsearch.index.mapper.*;
+
+public class LocalWeatherDataMapper extends BaseElasticSearchMapping {
+
+    private static final String INDEX_TYPE = "document";
+
+    public LocalWeatherDataMapper() {
+        super(INDEX_TYPE, Version.V_6_5_1);
+    }
+
+    @Override
+    protected void configureRootObjectBuilder(RootObjectMapper.Builder builder) {
+        builder
+                .add(new DateFieldMapper.Builder("dateTime"))
+                .add(new NumberFieldMapper.Builder("temperature", NumberFieldMapper.NumberType.FLOAT))
+                .add(new NumberFieldMapper.Builder("windSpeed", NumberFieldMapper.NumberType.FLOAT))
+                .add(new NumberFieldMapper.Builder("stationPressure", NumberFieldMapper.NumberType.FLOAT))
+                .add(new TextFieldMapper.Builder("skyCondition"))
+                .add(new ObjectMapper.Builder("station")
+                        .add(new TextFieldMapper.Builder("wban"))
+                        .add(new TextFieldMapper.Builder("name"))
+                        .add(new TextFieldMapper.Builder("state"))
+                        .add(new TextFieldMapper.Builder("location"))
+                        .add(new GeoPointFieldMapper.Builder("coordinates"))
+                        .nested(ObjectMapper.Nested.newNested(true, false)));
+    }
+}
+```
+
+
+
 [ElasticUtils]: https://www.github.com/bytefish/ElasticUtils

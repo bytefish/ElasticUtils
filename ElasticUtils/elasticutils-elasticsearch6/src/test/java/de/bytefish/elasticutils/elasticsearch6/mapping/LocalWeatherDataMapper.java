@@ -3,7 +3,6 @@
 
 package de.bytefish.elasticutils.elasticsearch6.mapping;
 
-import de.bytefish.elasticutils.elasticsearch6.mapping.BaseElasticSearchMapping;
 import org.elasticsearch.Version;
 import org.elasticsearch.index.mapper.*;
 
