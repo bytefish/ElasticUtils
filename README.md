@@ -2,7 +2,7 @@
 
 ## Description ##
 
-[ElasticUtils] is a library for working with Elasticsearch 2.x and Elasticsearch 5.x in Java. 
+[ElasticUtils] is a library for working with Elasticsearch 2, Elasticsearch 5 and Elasticsearch 6 in Java. 
 
 The Elasticsearch Java API is quite complex when it comes to the Bulk Insert API and the Mapping API. So I wrote the [ElasticUtils] 
 library, which hides most of the complexity when working with Elasticsearch API. It greatly simplifies working with the Elasticsearch 
@@ -16,7 +16,7 @@ You can add the following dependencies to your pom.xml to include ``elasticutils
 <dependency>
 	<groupId>de.bytefish.elasticutils</groupId>
 	<artifactId>elasticutils-core</artifactId>
-	<version>0.5</version>
+	<version>1.0</version>
 </dependency>
 ```
 
@@ -26,7 +26,7 @@ You can add the following dependencies to your pom.xml to include ``elasticutils
 <dependency>
 	<groupId>de.bytefish.elasticutils</groupId>
 	<artifactId>elasticutils-elasticsearch2</artifactId>
-	<version>0.5</version>
+	<version>1.0</version>
 </dependency>
 ```
 
@@ -36,7 +36,17 @@ You can add the following dependencies to your pom.xml to include ``elasticutils
 <dependency>
 	<groupId>de.bytefish.elasticutils</groupId>
 	<artifactId>elasticutils-elasticsearch5</artifactId>
-	<version>0.5</version>
+	<version>1.0</version>
+</dependency>
+```
+
+### Maven Dependency for Elasticsearch 6.x ###
+
+```xml
+<dependency>
+	<groupId>de.bytefish.elasticutils</groupId>
+	<artifactId>elasticutils-elasticsearch6</artifactId>
+	<version>1.0</version>
 </dependency>
 ```
 
