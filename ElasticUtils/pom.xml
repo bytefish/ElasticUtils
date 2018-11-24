@@ -102,6 +102,7 @@
         <module>elasticutils-core</module>
 		<module>elasticutils-elasticsearch2</module>
         <module>elasticutils-elasticsearch5</module>
+        <module>elasticutils-elasticsearch6</module>
     </modules>
 
     <properties>
