@@ -1,7 +1,7 @@
 // Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-package de.bytefish.elasticutils.elasticsearch5.utils;
+package de.bytefish.elasticutils.elasticsearch6.utils;
 
 import java.time.*;
 import java.util.Date;

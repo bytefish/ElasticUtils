@@ -1,15 +1,15 @@
 // Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-package de.bytefish.elasticutils.elasticsearch5.example;
+package de.bytefish.elasticutils.elasticsearch6.example;
 
 import de.bytefish.elasticutils.elasticsearch6.client.ElasticSearchClient;
 import de.bytefish.elasticutils.elasticsearch6.client.bulk.configuration.BulkProcessorConfiguration;
 import de.bytefish.elasticutils.elasticsearch6.client.bulk.options.BulkProcessingOptions;
-import de.bytefish.elasticutils.elasticsearch5.example.simulation.LocalWeatherDataSimulator;
+import de.bytefish.elasticutils.elasticsearch6.example.simulation.LocalWeatherDataSimulator;
 import de.bytefish.elasticutils.elasticsearch6.mapping.IElasticSearchMapping;
-import de.bytefish.elasticutils.elasticsearch5.mapping.LocalWeatherDataMapper;
-import de.bytefish.elasticutils.elasticsearch5.model.LocalWeatherData;
+import de.bytefish.elasticutils.elasticsearch6.mapping.LocalWeatherDataMapper;
+import de.bytefish.elasticutils.elasticsearch6.model.LocalWeatherData;
 import de.bytefish.elasticutils.elasticsearch6.utils.ElasticSearchUtils;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;

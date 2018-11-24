@@ -1,7 +1,7 @@
 // Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-package de.bytefish.elasticutils.elasticsearch5.example.simulation;
+package de.bytefish.elasticutils.elasticsearch6.example.simulation;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

@@ -1,12 +1,12 @@
 // Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-package de.bytefish.elasticutils.elasticsearch5.example.simulation;
+package de.bytefish.elasticutils.elasticsearch6.example.simulation;
 
-import de.bytefish.elasticutils.elasticsearch5.model.GeoLocation;
-import de.bytefish.elasticutils.elasticsearch5.model.LocalWeatherData;
-import de.bytefish.elasticutils.elasticsearch5.model.Station;
-import de.bytefish.elasticutils.elasticsearch5.utils.DateUtilities;
+import de.bytefish.elasticutils.elasticsearch6.model.GeoLocation;
+import de.bytefish.elasticutils.elasticsearch6.model.LocalWeatherData;
+import de.bytefish.elasticutils.elasticsearch6.model.Station;
+import de.bytefish.elasticutils.elasticsearch6.utils.DateUtilities;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
