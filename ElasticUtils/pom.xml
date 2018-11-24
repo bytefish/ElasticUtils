@@ -6,7 +6,7 @@
 
     <groupId>de.bytefish.elasticutils</groupId>
     <artifactId>elasticutils-parent</artifactId>
-    <version>0.5</version>
+    <version>1.0</version>
 
     <name>elasticutils</name>
     <packaging>pom</packaging>

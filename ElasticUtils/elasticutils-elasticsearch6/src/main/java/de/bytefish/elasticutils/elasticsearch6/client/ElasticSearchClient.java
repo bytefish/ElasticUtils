@@ -10,6 +10,7 @@ import de.bytefish.elasticutils.utils.JsonUtilities;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.xcontent.XContentType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,7 +51,7 @@ public class ElasticSearchClient<TEntity> implements IElasticSearchClient<TEntit
         return client.prepareIndex()
                 .setIndex(indexName)
                 .setType(mapping.getIndexType())
-                .setSource(messageBytes)
+                .setSource(messageBytes, XContentType.JSON)
                 .request();
     }
 

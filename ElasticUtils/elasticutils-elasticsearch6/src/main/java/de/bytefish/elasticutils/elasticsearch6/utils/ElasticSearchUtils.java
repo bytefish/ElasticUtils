@@ -8,14 +8,20 @@ import de.bytefish.elasticutils.exceptions.CreateIndexFailedException;
 import de.bytefish.elasticutils.exceptions.IndicesExistsFailedException;
 import de.bytefish.elasticutils.exceptions.PutMappingFailedException;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.IOUtils;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.logging.Loggers;
+import org.elasticsearch.common.xcontent.XContent;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentType;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class ElasticSearchUtils {
@@ -78,12 +84,12 @@ public class ElasticSearchUtils {
 
     private static AcknowledgedResponse internalPutMapping(Client client, String indexName, IElasticSearchMapping mapping) throws IOException {
 
+
+        String json = Strings.toString(mapping.getMapping());
+
         final PutMappingRequest putMappingRequest = new PutMappingRequest(indexName)
                 .type(mapping.getIndexType())
-                .source(mapping
-                        .getMapping()
-                        .generator()
-                        .toString());
+                .source(json, XContentType.JSON);
 
         final AcknowledgedResponse putMappingResponse = client
                 .admin()
@@ -97,4 +103,5 @@ public class ElasticSearchUtils {
 
         return putMappingResponse;
     }
+
 }

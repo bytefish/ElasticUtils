@@ -12,7 +12,7 @@ public class LocalWeatherDataMapper extends BaseElasticSearchMapping {
     private static final String INDEX_TYPE = "document";
 
     public LocalWeatherDataMapper() {
-        super(INDEX_TYPE, Version.V_5_0_0);
+        super(INDEX_TYPE, Version.V_6_5_1);
     }
 
     @Override
