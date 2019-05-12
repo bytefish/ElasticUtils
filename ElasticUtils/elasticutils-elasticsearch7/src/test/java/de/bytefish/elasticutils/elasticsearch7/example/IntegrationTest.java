@@ -47,7 +47,7 @@ public class IntegrationTest {
 
         RestHighLevelClient restHighLevelClient = new RestHighLevelClient(
                 RestClient.builder(
-                        new HttpHost("127.0.0.1", 9300, "http")
+                        new HttpHost("127.0.0.1", 9200, "http")
                 )
         );
 

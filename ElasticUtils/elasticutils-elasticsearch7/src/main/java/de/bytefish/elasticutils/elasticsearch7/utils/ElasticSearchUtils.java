@@ -70,7 +70,7 @@ public class ElasticSearchUtils {
 
     private static CreateIndexResponse internalCreateIndex(RestHighLevelClient client, String indexName) throws IOException {
 
-        final CreateIndexRequest request = new CreateIndexRequest("indexName");
+        final CreateIndexRequest request = new CreateIndexRequest(indexName);
 
         final CreateIndexResponse response = client.indices().create(request, RequestOptions.DEFAULT);
 
