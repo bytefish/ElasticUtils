@@ -103,6 +103,7 @@
 		<module>elasticutils-elasticsearch2</module>
         <module>elasticutils-elasticsearch5</module>
         <module>elasticutils-elasticsearch6</module>
+        <module>elasticutils-elasticsearch7</module>
     </modules>
 
     <properties>
