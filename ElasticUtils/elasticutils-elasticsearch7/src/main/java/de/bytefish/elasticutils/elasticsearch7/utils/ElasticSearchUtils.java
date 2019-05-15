@@ -34,7 +34,7 @@ public class ElasticSearchUtils {
     public static boolean indexExist(RestHighLevelClient client, String indexName) {
         try {
 
-            GetIndexRequest request = new GetIndexRequest("indexName");
+            GetIndexRequest request = new GetIndexRequest(indexName);
 
             return client.indices().exists(request, RequestOptions.DEFAULT);
 
@@ -82,6 +82,7 @@ public class ElasticSearchUtils {
     }
 
     private static AcknowledgedResponse internalPutMapping(RestHighLevelClient client, String indexName, IElasticSearchMapping mapping) throws IOException {
+
 
         String json = Strings.toString(mapping.getMapping());
 
