@@ -79,7 +79,7 @@ public class IntegrationTest {
 
     private void createMapping(RestHighLevelClient client, String indexName, IElasticSearchMapping mapping) {
         if(ElasticSearchUtils.indexExist(client, indexName)) {
-            ElasticSearchUtils.putMapping(client, indexName, mapping);
+            ElasticSearchUtils.createOrUpdatemapping(client, indexName, mapping);
         }
     }
 }

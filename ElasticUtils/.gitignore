@@ -6,3 +6,4 @@ elasticutils-*-sources.jar
 *.asc
 stderr.log
 stdout.log
+ES_LCD.log

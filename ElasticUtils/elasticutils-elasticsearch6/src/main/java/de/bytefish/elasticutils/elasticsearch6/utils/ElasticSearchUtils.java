@@ -84,7 +84,6 @@ public class ElasticSearchUtils {
 
     private static AcknowledgedResponse internalPutMapping(Client client, String indexName, IElasticSearchMapping mapping) throws IOException {
 
-
         String json = Strings.toString(mapping.getMapping());
 
         final PutMappingRequest putMappingRequest = new PutMappingRequest(indexName)
