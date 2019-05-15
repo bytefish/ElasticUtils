@@ -15,7 +15,6 @@ The library supports:
 * Elasticsearch 6.x
 * Elasticsearch 7.x
 
-
 ## Maven Dependencies ##
 
 You can add the following dependencies to your pom.xml to include ``elasticutils`` in your project.
@@ -24,7 +23,7 @@ You can add the following dependencies to your pom.xml to include ``elasticutils
 <dependency>
 	<groupId>de.bytefish.elasticutils</groupId>
 	<artifactId>elasticutils-core</artifactId>
-	<version>1.1</version>
+	<version>1.2</version>
 </dependency>
 ```
 
@@ -34,7 +33,7 @@ You can add the following dependencies to your pom.xml to include ``elasticutils
 <dependency>
 	<groupId>de.bytefish.elasticutils</groupId>
 	<artifactId>elasticutils-elasticsearch2</artifactId>
-	<version>1.1</version>
+	<version>1.2</version>
 </dependency>
 ```
 
@@ -44,7 +43,7 @@ You can add the following dependencies to your pom.xml to include ``elasticutils
 <dependency>
 	<groupId>de.bytefish.elasticutils</groupId>
 	<artifactId>elasticutils-elasticsearch5</artifactId>
-	<version>1.1</version>
+	<version>1.2</version>
 </dependency>
 ```
 
@@ -54,7 +53,7 @@ You can add the following dependencies to your pom.xml to include ``elasticutils
 <dependency>
 	<groupId>de.bytefish.elasticutils</groupId>
 	<artifactId>elasticutils-elasticsearch6</artifactId>
-	<version>1.1</version>
+	<version>1.2</version>
 </dependency>
 ```
 
@@ -65,7 +64,7 @@ You can add the following dependencies to your pom.xml to include ``elasticutils
 <dependency>
 	<groupId>de.bytefish.elasticutils</groupId>
 	<artifactId>elasticutils-elasticsearch7</artifactId>
-	<version>1.1</version>
+	<version>1.2</version>
 </dependency>
 ```
 
