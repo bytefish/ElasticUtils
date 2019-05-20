@@ -2,7 +2,7 @@
 
 ## Description ##
 
-[ElasticUtils] is a library for working with Elasticsearch 2, Elasticsearch 5 and Elasticsearch 6 in Java. 
+[ElasticUtils] is a library for working with Elasticsearch 2, Elasticsearch 5, Elasticsearch 6 and Elasticsearch 7 in Java. 
 
 The Elasticsearch Java API is quite complex when it comes to the Bulk Insert API and the Mapping API. So I wrote the [ElasticUtils] 
 library, which hides most of the complexity when working with Elasticsearch API. It greatly simplifies working with the Elasticsearch 
